@@ -1,0 +1,198 @@
+body {
+  background: #272822;
+  color: #ffffff;
+  margin-top: 5rem;
+  word-break: break-word;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #e1efe4;
+  font-family: Consolas;
+
+}
+
+hr{background-color: #75715e;}
+
+.modal-header {
+  border-bottom: 1px solid #75715e !important;
+}
+
+.modal-footer {
+  border-top: 1px solid #75715e !important;
+}
+
+.orange {
+  color: #fd971f;
+}
+
+.green {
+  color: #a6e22e;
+}
+
+.notif {
+  text-decoration: none!important;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+a:hover:not(.btn):not(.nav-link):not(.navbar-brand) {
+  color: #fd5ff0!important;
+  text-decoration: none;
+}
+
+legend {
+  color: #a6e22e;
+  font-family: Consolas;
+}
+
+textarea, input[type=text] {
+  background-color: #5c5e50!important;
+  color: #ffffff!important;
+}
+
+.list-group-item-light {
+  background-color: #636255;
+  color: #e1efe4;
+}
+
+.like, .dislike {
+  color: #6c757d!important;
+}
+
+.liked{
+  color: #a6e22e!important;
+}
+
+.disliked{
+  color: #f92672!important;
+}
+
+.btn {
+  font-family: Consolas;
+}
+
+.close {
+  color: #ffffff!important;
+}
+.modal-content {
+  font-family: Consolas;
+  background-color: #3e3d32!important;
+}
+
+.modal-title {
+  color: #a6e22e;
+}
+
+.modal-body {
+  color: #e1efe4;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+.bg-steel {
+  background-color: #636255;
+  font-family: Consolas;
+}
+
+.mr-2{
+  color: #f92672;
+}
+
+.blue {
+  color: #66d9ef;
+}
+
+.text-secondary {
+  color: #e1efe4!important;
+}
+
+.text-muted {
+  color: #e6db74!important;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.btn-group-xs > .btn, .btn-xs {
+  padding: .25rem .4rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
+}
+
+.site-header .navbar-nav .nav-link {
+  color: #cbd5db;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+  color: #fd971f;
+}
+.navbar-brand:hover{color: #fd971f!important;}
+
+.site-header .navbar-nav .nav-link.active {
+  font-weight: 500;
+}
+
+.content-section {
+  background: #3e3d32;
+  color: #e1efe4;
+  padding: 10px 20px;
+  border: 1px solid #75715e;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.article-title {
+  color: #a6e22e;
+}
+
+a.article-title:hover {
+  color: #428bca;
+  text-decoration: none;
+}
+
+.article-content {
+  color: #e1efe4;
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  font-family: Consolas;
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #636255
+}
+
+.article-metadata a:hover {
+  color: #e1efe4;
+  text-decoration: none;
+}
+
+.article-svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-metadata {
+ color: #e6db74!important;
+ font-family: Consolas;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}
