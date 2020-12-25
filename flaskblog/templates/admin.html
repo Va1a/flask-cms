@@ -1,0 +1,284 @@
+{% extends 'layout.html' %}
+{% block content %}
+	<center><h1>User Management</h1></center>
+	<hr>
+	<div class="content-section">
+			<button class='btn btn-primary btn-sm' data-toggle="modal" data-target="#badgeModal">assign badge</button>
+			<button class='btn btn-primary btn-sm' data-toggle="modal" data-target="#revokeBadgeModal">revoke badge</button>
+		<div style="float:right;">
+			<button class='btn btn-danger btn-sm' data-toggle="modal" data-target="#permissionsModal">permissions</button>
+			<button class='btn btn-danger btn-sm' data-toggle="modal" data-target="#changeEmailModal">change email</button>
+			<button class='btn btn-danger btn-sm'>prune</button>
+		</div>
+	</div>
+<hr>
+<div class="content-section">
+ <ul class="list-group">
+ 	{% for user in users.items %}
+    <li class="list-group-item list-group-item-light"><a class='article-title' href='{{ url_for("users.userpage", username=user.username) }}'><b>{{user.username}}</b></a> | <b>{{ user.posts|length }}</b> {% if user.posts|length == 1 %} post {% else %} posts {% endif %} | <b>{{ user.comments|length }}</b> comment{% if not user.comments|length == 1 %}s{% endif %} | Joined on <b>{{ user.date_joined.strftime('%B %d, %Y') }}</b> | Perm. Level: <b>{{ user.permission_level }}</b> |
+    	{% if user.badges %}
+    	Badge{% if user.badges|length != 1 %}s{% endif %}:
+    	{% for badge in user.badges %}
+			<span title="{{ badge.name }}" class="{{ badge.html }}"></span>
+	    {% endfor %}
+	    {% else %}
+	    <i>No badges...</i>
+	    {% endif %}
+	</li>
+    {% endfor %}
+</ul>
+</div>
+<center>
+{% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+	{% if page_num %}
+		{% if users.page == page_num %}
+		<a class="btn btn-info mb-4" href="{{ url_for('main.admin', page=page_num) }}">{{ page_num }}</a>
+		{% else %}
+		<a class="btn btn-outline-info mb-4" href="{{ url_for('main.admin', page=page_num) }}">{{ page_num }}</a>
+		{% endif %}
+	{% else %}
+		...
+	{% endif %}
+	{% endfor %}
+</center>
+
+<!-- BADGE MODAL -->
+<div class="modal fade" id="badgeModal" tabindex="-1" role="dialog" aria-labelledby="badgeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="badgeModalLabel">Assign a New Badge:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action='' method='POST'>
+	      <div class="modal-body">
+		{{ badgeform.hidden_tag() }}
+		<fieldset class='form-group'>
+			<div class='form-group'>
+				{{ badgeform.user.label(class='form-control-label') }}
+				
+				{% if badgeform.user.errors %}
+					{{ badgeform.user(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in badgeform.user.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ badgeform.user(class='form-control form-control-lg', maxlength='32') }}
+				{% endif %}
+			</div>
+			<div class='form-group'>
+				{{ badgeform.badge_name.label(class='form-control-label') }}
+				
+				{% if badgeform.badge_name.errors %}
+					{{ badgeform.badge_name(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in badgeform.badge_name.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ badgeform.badge_name(class='form-control form-control-lg', maxlength='32') }}
+				{% endif %}	
+			</div>
+			<div class='form-group'>
+				{{ badgeform.badge_html.label(class='form-control-label') }} <small class='text-muted'>(see <a href='https://fontawesome.com/v4.7.0/icons/' target="_blank">here</a>)</small>
+				
+				{% if badgeform.badge_html.errors %}
+					{{ badgeform.badge_html(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in badgeform.badge_html.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ badgeform.badge_html(class='form-control form-control-lg', maxlength='56') }}
+				{% endif %}	
+			</div>
+		</fieldset>      
+		</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<div class='form-group'>
+				<input class="btn btn-info" id="submit" name="submit" type="submit" value="Assign">
+			</div>	
+	       </div>
+       </form>
+    </div>
+  </div>
+</div>
+<!-- END BADGE MODAL -->
+
+
+<!-- REMOVE BADGE MODAL -->
+<div class="modal fade" id="revokeBadgeModal" tabindex="-1" role="dialog" aria-labelledby="revokeBadgeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="revokeBadgeModalLabel">Revoke a Badge:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action='' method='POST'>
+	      <div class="modal-body">
+		{{ revokebadgeform.hidden_tag() }}
+		<fieldset class='form-group'>
+			<div class='form-group'>
+				{{ revokebadgeform.user.label(class='form-control-label') }}
+				
+				{% if revokebadgeform.user.errors %}
+					{{ revokebadgeform.user(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in revokebadgeform.user.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ revokebadgeform.user(class='form-control form-control-lg', maxlength='32') }}
+				{% endif %}
+			</div>
+			<div class='form-group'>
+				{{ revokebadgeform.badge_name.label(class='form-control-label') }}
+				
+				{% if revokebadgeform.badge_name.errors %}
+					{{ revokebadgeform.badge_name(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in revokebadgeform.badge_name.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ revokebadgeform.badge_name(class='form-control form-control-lg', maxlength='32') }}
+				{% endif %}	
+			</div>
+		</fieldset>      
+		</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<div class='form-group'>
+				<input class="btn btn-danger" id="submit" name="submit" type="submit" value="Revoke">
+			</div>	
+	       </div>
+       </form>
+    </div>
+  </div>
+</div>
+<!-- END REMOVE BADGE MODAL -->
+
+<!-- PERMISSIONS MODAL -->
+<div class="modal fade" id="permissionsModal" tabindex="-1" role="dialog" aria-labelledby="permissionsModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="permissionsModalLabel">Manage User Permissions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action='' method='POST'>
+	      <div class="modal-body">
+		{{ permform.hidden_tag() }}
+		<fieldset class='form-group'>
+			<div class='form-group'>
+				{{ permform.user.label(class='form-control-label') }}
+				
+				{% if permform.user.errors %}
+					{{ permform.user(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in permform.user.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ permform.user(class='form-control form-control-lg', maxlength='32') }}
+				{% endif %}
+			</div>
+			<div class='form-group'>
+				{{ permform.level.label(class='form-control-label') }}
+				
+				{% if permform.level.errors %}
+					{{ permform.level(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in permform.level.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ permform.level(class='form-control form-control-lg') }}
+				{% endif %}	
+			</div>
+		</fieldset>
+		</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<div class='form-group'>
+				<input class="btn btn-danger" id="submit" name="submit" type="submit" value="Set Permissions">
+			</div>	
+	       </div>
+       </form>
+    </div>
+  </div>
+</div>
+<!-- END PERMISSIONS MODAL -->
+
+<!-- CHANGE EMAIL MODAL -->
+<div class="modal fade" id="changeEmailModal" tabindex="-1" role="dialog" aria-labelledby="changeEmailModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="changeEmailModalLabel">Change User Email</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action='' method='POST'>
+	      <div class="modal-body">
+		{{ emailform.hidden_tag() }}
+		<fieldset class='form-group'>
+			<div class='form-group'>
+				{{ emailform.user.label(class='form-control-label') }}
+				
+				{% if emailform.user.errors %}
+					{{ emailform.user(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in emailform.user.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ emailform.user(class='form-control form-control-lg', maxlength='32') }}
+				{% endif %}
+			</div>
+			<div class='form-group'>
+				{{ emailform.new_email.label(class='form-control-label') }}
+				
+				{% if emailform.new_email.errors %}
+					{{ emailform.new_email(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in emailform.new_email.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ emailform.new_email(class='form-control form-control-lg') }}
+				{% endif %}	
+			</div>
+		</fieldset>
+		</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			<div class='form-group'>
+				<input class="btn btn-danger" id="submit" name="submit" type="submit" value="Change Email">
+			</div>	
+	       </div>
+       </form>
+    </div>
+  </div>
+</div>
+<!-- END CHANGE EMAIL MODAL -->
+
+{% endblock content %}

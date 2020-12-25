@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="content-section">
+<h1 class="blue"><center>Alerts</center></h1>
+</div>
+{% if alerts.items %}
+<div class="content-section">
+<button class='btn btn-primary btn-sm' data-toggle="modal" data-target="#alertSettingsModal">alert settings</button>
+<button style="float: right;" class='btn btn-danger btn-sm' data-toggle="modal" data-target="#clearAllModal">clear all</button>
+</div>
+{% for alert in alerts.items %}
+<div class="content-section">
+	<h5 {% if alert.seen %} style="color: #9f9f92;" {% endif %}><a class="orange notif" href="/user/{{alert.from_username}}" {% if alert.seen %} style="color: #9f9f92;" {% endif %}><i>{{ alert.from_username }}</i></a> {% if alert.type == 'like' %}liked{% elif alert.type == 'dislike' %}disliked{% elif alert.type == 'comment' %}commented on{% endif %} your post <a class="green notif" href="/post/{{alert.post_id}}" {% if alert.seen %} style="color: #9f9f92;" {% endif %}>"{{ alert.post_title }}"</a> // <small {% if alert.seen %} style="color: #9f9f92;" {% endif %}>{{ alert.date.strftime('%B %d, %Y - %I:%M %p') }}</small> <span style="float: right; cursor: pointer; color: #e6db74;" onclick="window.location.href = '/alerts/settings/clear-only?alert={{ alert.id }}';" class="fa fa-trash-o"></span></h5>
+</div>
+{% endfor %}
+{% else %}
+<div class="content-section">
+	<h3 class="yellow"><i>No Alerts..</i></h3>
+</div>
+{% endif %}
+<center>
+{% for page_num in alerts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+	{% if page_num %}
+		{% if alerts.page == page_num %}
+		<a class="btn btn-info mb-4" href="{{ url_for('users.alerts', page=page_num) }}">{{ page_num }}</a>
+		{% else %}
+		<a class="btn btn-outline-info mb-4" href="{{ url_for('users.alerts', page=page_num) }}">{{ page_num }}</a>
+		{% endif %}
+	{% else %}
+		...
+	{% endif %}
+{% endfor %}
+</center>
+
+<div class="modal fade" id="clearAllModal" tabindex="-1" role="dialog" aria-labelledby="clearAllModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clearAllModalLabel">Clear all alerts?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This will permanently delete all your alerts.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <form action="/alerts/settings/clear-all" method="POST">
+        	<input type="submit" class="btn btn-danger" value="Clear Alerts">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

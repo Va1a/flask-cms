@@ -1,0 +1,126 @@
+{% extends 'layout.html' %}
+{% block content %}
+<script type="text/javascript">
+function getSearch() {return document.getElementById('searchBox').value;}
+</script>
+	<div class="content-section">
+		<form method='POST' action=''>
+		{{ form.hidden_tag() }}
+		<fieldset class='form-group'>
+			<legend class='border-bottom mb-4'>{{ legend }}</legend>
+			<div class='form-group'>				
+				{% if form.query.errors %}
+					{{ form.query(class='form-control form-control-lg is-invalid') }}
+					<div class='invalid-feedback'>
+						{% for error in form.query.errors %}
+						<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+				{{ form.query(id='searchBox', class='form-control form-control-lg', maxlength='128') }}
+				{% endif %}
+			</div>
+		</fieldset>
+		<a style="float:right;" class='btn btn-outline-secondary' onclick='location.href="{{ url_for('main.search', view='users') }}&query="+getSearch();'>view users</a>
+		<a style="float:right;" class='btn btn-outline-secondary mr-4' onclick='location.href="{{ url_for('main.search', view='posts') }}&query="+getSearch();'>view posts</a>
+		<div class='form-group'>
+			<input class="btn btn-outline-info" id="submit" name="submit" type="submit" value="search">
+		</div>
+	</form>
+</div>
+<div class="content-section">
+	<center><h1 style="color: #66d9ef;"><i>{% if search and posts %}{% if posts.items %}Search Results:{% else %}No Post Results...{% endif %}{% elif search and users %}{% if users.items %}Search Results:{% else %}No User Results...{% endif %}{% elif posts %}Recent Posts:{% elif users %}Recent Users:{% else %}No Content to Display...{% endif %}</i></h1></center>
+</div>
+{% if posts %}
+	{% for post in posts.items %}
+	<article class="media content-section">
+	<div class='col-'>
+	<img class='rounded-circle article-img' src='{{ url_for("static", filename="profile_pics/" + post.author.image_file) }}'>
+	<div class='row- mt-1'>
+	  <form action='{{ url_for("posts.like_post", post_id=post.id, returnto="post", returnid=post.id) }}' method="POST">
+		{% if current_user.is_authenticated == False or has_user_liked(post.id, current_user.id) == False %}
+			&nbsp;&nbsp;<button class='like btn btn-link btn-xs'><span class="fa fa-thumbs-up"></span></button> {{ post.likes|length }}
+		{% elif has_user_liked(post.id, current_user.id) == True %}
+			&nbsp;&nbsp;<button class='liked btn btn-link btn-xs'><span class="fa fa-thumbs-up"></span></button> {{ post.likes|length }}
+		{% endif %}
+	</form>
+	  <form action='{{ url_for("posts.dislike_post", post_id=post.id, returnto="post", returnid=post.id) }}' method="POST">
+		{% if current_user.is_authenticated == False or has_user_disliked(post.id, current_user.id) == False %}
+			&nbsp;&nbsp;<button class='dislike btn btn-link btn-xs'><span class='fa fa-thumbs-down'></span></button> {{ post.dislikes|length }}
+		{% elif has_user_disliked(post.id, current_user.id) == True %}
+			&nbsp;&nbsp;<button class='disliked btn btn-link btn-xs'><span class='fa fa-thumbs-down'></span></button> {{ post.dislikes|length }}
+		{% endif %}
+	</form>
+	</div>
+	</div>
+	  <div class="media-body">
+	    <div class="article-metadata">
+	      <a class="mr-2" href="{{ url_for('users.userpage', username=post.author.username) }}">{{ post.author.username }}</a>
+	      <small class="text-muted">{% if post.author == current_user %}(me) {% endif %} {{ post.date_posted.strftime('%B %d, %Y - %I:%M %p') }}</small>
+	      <div style="float:right;" class="mr-2">
+      		<a type="button" class="btn btn-secondary btn-xs" href="{{ url_for('posts.post', post_id=post.id) }}">comments ({{ len(post.comments) }})</a>
+      	  </div>
+	    </div>
+	    <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+	    <p class="article-content">{% if post.content|length >= 275 %}{{ post.content[:272] }} <a href="{{ url_for('posts.post', post_id=post.id) }}"><i style="color: #ae81ff">... more</i>{% else %}{{ post.content }}{% endif %}</p>
+	  </div>
+	</article>
+	{% endfor %}
+	<center>
+	{% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+	{% if page_num %}
+		{% if posts.page == page_num %}
+		<a class="btn btn-info mb-4" href="{{ url_for('main.search', page=page_num, view=view, query=query) }}">{{ page_num }}</a>
+		{% else %}
+		<a class="btn btn-outline-info mb-4" href="{{ url_for('main.search', page=page_num, view=view, query=query) }}">{{ page_num }}</a>
+		{% endif %}
+	{% else %}
+		...
+	{% endif %}
+	{% endfor %}
+	</center>
+{% elif users %}
+	{% for user in users.items %}
+	<div class="content-section">
+	  <div class="media">
+	    <img class="rounded-circle account-img" src='{{ url_for("static", filename="profile_pics/" + user.image_file) }}'>
+	    <div class="media-body">
+	      <h2 class="account-heading"><a class='article-title' href="{{ url_for('users.userpage', username=user.username) }}">{{ user.username }}</a>
+	      	{% for badge in user.badges[:3] %}
+				<span title="{{ badge.name }}" class="{{ badge.html }}"></span>
+	      	{% endfor %}
+	      </h2>
+	      <p class="text-secondary account-metadata"><b>{{ user.posts|length }}</b> {% if user.posts|length == 1 %} post {% else %} posts {% endif %} | <b>{{ user.comments|length }}</b> comment{% if not user.comments|length == 1 %}s{% endif %} |
+	      	Joined on <b>{{ user.date_joined.strftime('%B %d, %Y') }}</b>
+	      </p>
+	      <p class="text-secondary"><i>{{ user.biography }}</i></p>
+	    </div>
+	  </div>
+	 </div>
+
+	 {% endfor %}
+<center>
+	{% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+	{% if page_num %}
+		{% if users.page == page_num %}
+		<a class="btn btn-info mb-4" href="{{ url_for('main.search', page=page_num, view=view, query=query) }}">{{ page_num }}</a>
+		{% else %}
+		<a class="btn btn-outline-info mb-4" href="{{ url_for('main.search', page=page_num, view=view, query=query) }}">{{ page_num }}</a>
+		{% endif %}
+	{% else %}
+		...
+	{% endif %}
+	{% endfor %}
+</center>
+
+{% elif noresults %}
+	<article class="media content-section">
+		<center>
+			<i>No search results for the given query.</i>
+		</center>
+	</article>
+{% endif %}
+
+
+
+{% endblock content %}
