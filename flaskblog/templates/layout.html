@@ -75,7 +75,6 @@ if ( window.history.replaceState ) {
 	          	<li class="list-group-item list-group-item-light"><a href="{{ url_for('main.home') }}"><span class="fa fa-home"></span> Feed</a></li>
 	            <li class="list-group-item list-group-item-light"><a href="{{ url_for('users.alerts') }}"><span class="fa fa-bell"></span> Alerts {% if current_user.alerts|rejectattr("seen")|list %}<span style="color: #f92672;">({{ current_user.alerts|rejectattr("seen")|list|length if current_user.alerts|rejectattr("seen")|list|length < 99 else '99+' }})</span>{% endif %}</a></li>
 	            <li class="list-group-item list-group-item-light"><span class="fa fa-envelope"></span> Messages</li>
-	            <li class="list-group-item list-group-item-light"><a href="{{ url_for('main.store') }}"><span class="fa fa-shopping-cart"></span> Store</a></li>
 	            <li class="list-group-item list-group-item-light"><a href="{{ url_for('users.userpage', username=current_user.username) }}"><span class="fa fa-user"></span> Your Page</a></li>
 	            {% if current_user.permission_level > 2%}<li class="list-group-item list-group-item-light"><a href="{{ url_for('main.admin') }}"><span class="fa fa-shield"></span> Manage</a></li>{% endif %}
 	          </ul>
