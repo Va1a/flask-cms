@@ -11,8 +11,9 @@ fork of @CoreyMSchafer 's flaskblog with added functionality (comments, likes, a
     flask-secret-key = (generate your own random secret key and put it here) [you can easily make one with os.urandom(24).hex()]
 ```
 2. navigate to the root project directory (with run.py in it)
-3. open the python interpreter in the location from step 2.
-4. run:
+3. ensure that an empty database is available at your database uri location. (if using default, simply create a file called "site.db" in the project directory)
+4. open the python interpreter in the location from step 2.
+5. run:
 ```py
    >>> from flaskblog import create_app, db
    >>> app = create_app()
@@ -22,4 +23,4 @@ fork of @CoreyMSchafer 's flaskblog with added functionality (comments, likes, a
    >>> ctx.pop()
    >>> exit()
 ```
-5. Finally, run `run.py`
+6. Finally, run `run.py`
