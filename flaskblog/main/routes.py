@@ -18,10 +18,12 @@ def home():
 def about():
 	return render_template('about.html', title='about')
 
+# SEO ROBOTS.TXT
 @main.route('/robots.txt')
 def robots():
 	return send_from_directory('static', 'robots.txt')
 
+# SEARCH PAGE
 @main.route('/search', methods=['GET', 'POST'])
 def search():
 	page = request.args.get('page', 1, type=int)
@@ -50,10 +52,12 @@ def search():
 			users = User.query.order_by(User.date_joined.desc()).paginate(page=page, per_page=5)
 			return render_template('search.html', title='search', form=form, legend='Search', view=view, users=users, query=argSearch)
 
+# TODO: blank page
 @main.route('/store')
 def store():
 	return render_template('store.html')
 
+# USER MANAGEMENT
 @main.route('/manage', methods=['GET', 'POST'])
 def admin():
 	if not current_user.is_authenticated or current_user.permission_level < 3:
