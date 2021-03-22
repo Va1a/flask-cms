@@ -11,6 +11,7 @@ fork of @CoreyMSchafer 's flaskblog with added functionality (comments, likes, a
     flask-secret-key = (generate your own random secret key and put it here) [you can easily make one with os.urandom(24).hex()]
 ```
 2. navigate to the root project directory (with run.py in it)
+3. install requirements from the requirements.txt file `pip install -r requirements.txt`
 3. ensure that an empty database is available at your database uri location. (if using default, simply create a file called "site.db" in the project directory)
 4. open the python interpreter in the location from step 2.
 5. run:
