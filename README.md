@@ -24,4 +24,4 @@ fork of @CoreyMSchafer 's flaskblog with added functionality (comments, likes, a
    >>> ctx.pop()
    >>> exit()
 ```
-6. Finally, run `run.py`
+7. Finally, run `run.py`
