@@ -7,3 +7,4 @@ flask_sqlalchemy==2.5.1
 flask_wtf==0.14.3
 Pillow==8.1.2
 WTForms==2.3.3
+email-validator==1.1.2
