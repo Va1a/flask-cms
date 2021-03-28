@@ -4,6 +4,7 @@ import os
 class Config:
 	SECRET_KEY = os.environ.get('flask-secret-key')
 	SQLALCHEMY_DATABASE_URI = os.environ.get('flask-sqlalchemy-database-uri')
+	SQLALCHEMY_TRACK_MODIFICATIONS = False
 	MAIL_SERVER = 'smtp.gmail.com'
 	MAIL_PORT = 587
 	MAIL_USE_TLS = True
